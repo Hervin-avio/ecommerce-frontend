@@ -1,63 +1,95 @@
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold mb-6 text-center">Register User</h2>
+  <div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-green-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
+      <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Register User</h2>
 
       <form @submit.prevent="register" class="space-y-4">
-        <div>
-          <label class="block mb-1 font-medium">Nama</label>
+        <!-- Nama -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Nama</span>
+          </label>
           <input
             v-model="name"
             type="text"
             placeholder="Nama lengkap"
             required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+            class="input input-bordered w-full"
           />
         </div>
 
-        <div>
-          <label class="block mb-1 font-medium">Email</label>
+        <!-- Email -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Email</span>
+          </label>
           <input
             v-model="email"
             type="email"
             placeholder="Email"
             required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+            class="input input-bordered w-full"
           />
         </div>
 
-        <div>
-          <label class="block mb-1 font-medium">Password</label>
+        <!-- Password -->
+        <div class="form-control relative">
+          <label class="label">
+            <span class="label-text font-medium">Password</span>
+          </label>
           <input
             v-model="password"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             placeholder="Password"
             required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+            class="input input-bordered w-full pr-10"
           />
+          <button
+            type="button"
+            @click="togglePassword"
+            class="absolute right-3 top-10 text-gray-500 hover:text-gray-700 cursor-pointer"
+          >
+            <span v-if="showPassword">🙈</span>
+            <span v-else>👁️</span>
+          </button>
         </div>
 
-        <div>
-          <label class="block mb-1 font-medium">Konfirmasi Password</label>
+        <!-- Konfirmasi Password -->
+        <div class="form-control relative">
+          <label class="label">
+            <span class="label-text font-medium">Konfirmasi Password</span>
+          </label>
           <input
             v-model="password_confirmation"
-            type="password"
+            :type="showConfirmPassword ? 'text' : 'password'"
             placeholder="Konfirmasi Password"
             required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+            class="input input-bordered w-full pr-10"
           />
+          <button
+            type="button"
+            @click="toggleConfirmPassword"
+            class="absolute right-3 top-10 text-gray-500 hover:text-gray-700 cursor-pointer"
+          >
+            <span v-if="showConfirmPassword">🙈</span>
+            <span v-else>👁️</span>
+          </button>
         </div>
 
+        <!-- Tombol Register -->
         <button
           type="submit"
-          class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition"
+          class="btn btn-success w-full text-white font-semibold cursor-pointer"
         >
           Register
         </button>
       </form>
 
-      <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
-      <p class="mt-3 text-center">
+      <!-- Error -->
+      <p v-if="error" class="text-red-500 mt-3 text-center text-sm">{{ error }}</p>
+
+      <!-- Link Login -->
+      <p class="mt-4 text-center text-sm text-gray-600">
         Sudah punya akun?
         <router-link to="/login" class="text-blue-500 hover:underline">Login</router-link>
       </p>
@@ -77,24 +109,22 @@ export default {
       password: '',
       password_confirmation: '',
       error: null,
+      showPassword: false,
+      showConfirmPassword: false,
     }
   },
   methods: {
     async register() {
       try {
-        // kirim request ke API register Laravel
         await api.post('/register', {
           name: this.name,
           email: this.email,
           password: this.password,
           password_confirmation: this.password_confirmation,
         })
-
-        // redirect ke login setelah berhasil register
         this.$router.push('/login')
       } catch (err) {
-        // ambil error dari response API jika ada
-        if (err.response && err.response.data && err.response.data.errors) {
+        if (err.response?.data?.errors) {
           const errors = err.response.data.errors
           this.error = Object.values(errors).flat().join(' ')
         } else {
@@ -102,10 +132,12 @@ export default {
         }
       }
     },
+    togglePassword() {
+      this.showPassword = !this.showPassword
+    },
+    toggleConfirmPassword() {
+      this.showConfirmPassword = !this.showConfirmPassword
+    },
   },
 }
 </script>
-
-<style scoped>
-/* optional styling */
-</style>

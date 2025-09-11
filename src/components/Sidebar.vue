@@ -13,8 +13,7 @@
             <router-link to="/products" class="w-full block px-4 py-2 rounded hover:bg-gray-700">Produk</router-link>
             <router-link to="/orders" class="w-full block px-4 py-2 rounded hover:bg-gray-700">Pesanan</router-link>
             <router-link to="/reports" class="w-full block px-4 py-2 rounded hover:bg-gray-700">Laporan</router-link>
-            <router-link to="/settings"
-                class="w-full block px-4 py-2 rounded hover:bg-gray-700">Pengaturan</router-link>
+           
             <hr class="border-gray-700 mt-2" />
             <!-- Logout Button -->
             <button @click="logout" class="w-full text-left px-4 py-2 rounded hover:bg-gray-700 mt-2 cursor-pointer">
