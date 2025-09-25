@@ -1,42 +1,35 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Layout
-import MainLayout from '../layouts/MainLayout.vue'
-
-// Views
-import Home from '../views/Home.vue'
-import Dashboard from '../views/Dashboard.vue'
-import Categories from '../views/Categories.vue'
-import Products from '../views/Products.vue'
-import TambahProduct from '../views/TambahProduct.vue'
-import EditProduct from '@/views/EditProduct.vue'
-import Login from '../views/Login.vue'
-import Orders from '@/views/Orders.vue'
-import EditOrder from '@/views/EditOrder.vue'
-import Checkout from '@/views/Checkout.vue' // halaman checkout untuk pelanggan
 
 const routes = [
   // Public Routes
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'Login', component: Login },
+  { path: '/', name: 'Home', component: () => import('../views/Home.vue') },
+  { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },
   { path: '/register', name: 'Register', component: () => import('../views/Register.vue') },
-  { path: '/checkout', name: 'Checkout', component: Checkout }, // ✅ checkout tetap di luar MainLayout
+  { path: '/checkout', name: 'Checkout', component: () => import('../views/Checkout.vue') }, // ✅ checkout tetap di luar MainLayout
+   { path: '/forgot-password', name: 'ForgotPassword', component: () => import('../views/ForgotPassword.vue') }, // Tambahkan rute ini
 
-  // Routes admin pakai sidebar/MainLayout
+
+  // Admin Routes (dalam layout utama)
   {
     path: '/',
-    component: MainLayout,
+    component: () => import('../layouts/MainLayout.vue'), // Lazy load layout juga
     children: [
-      { path: 'dashboard', name: 'Dashboard', component: Dashboard },
-      { path: 'categories', name: 'Categories', component: Categories },
-      { path: 'products', name: 'Products', component: Products },
-      { path: 'products/tambah', name: 'TambahProduct', component: TambahProduct },
-      { path: 'products/edit/:id', name: 'EditProduct', component: EditProduct, props: true },
-      { path: 'orders', name: 'Orders', component: Orders },
-      { path: 'orders/edit/:id', name: 'EditOrder', component: EditOrder },
+      { path: 'dashboard', name: 'Dashboard', component: () => import('../views/admin/Dashboard.vue') },
+      { path: 'categories', name: 'Categories', component: () => import('../views/admin/Categories.vue') },
+      { path: 'products', name: 'Products', component: () => import('../views/admin/Products.vue') },
+      { path: 'reports', name: 'Reports', component: () => import('../views/admin/Reports.vue') },
+      { path: 'products/tambah', name: 'TambahProduct', component: () => import('../views/admin/TambahProduct.vue') },
+      { path: 'products/edit/:id', name: 'EditProduct', component: () => import('../views/admin/EditProduct.vue'), props: true },
+      { path: 'orders', name: 'Orders', component: () => import('../views/admin/Orders.vue') },
+      { path: 'orders/edit/:id', name: 'EditOrder', component: () => import('../views/admin/EditOrder.vue') },
+      { path: 'users', name: 'Users', component: () => import('../views/admin/Users.vue') },
+      { path: 'users/edit/:id', name: 'EditUser', component: () => import('../views/admin/EditUser.vue'), props: true },
+
+
     ],
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),

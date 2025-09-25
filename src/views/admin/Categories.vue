@@ -1,5 +1,6 @@
 <template>
   <div class="p-6 flex flex-col lg:flex-row gap-6">
+
     <!-- ✅ Modal Konfirmasi Hapus -->
     <div v-if="showDeleteModal" class="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-96 border border-gray-200">
@@ -8,13 +9,13 @@
         <div class="flex justify-end gap-3">
           <button
             @click="showDeleteModal = false"
-            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
+            class="btn btn-outline btn-sm btn-neutral"
           >
             Batal
           </button>
           <button
             @click="confirmDelete"
-            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
+            class="btn btn-sm btn-error"
           >
             Hapus
           </button>
@@ -26,7 +27,7 @@
     <transition name="fade">
       <div
         v-if="toast.show"
-        :class="[
+        :class="[ 
           'fixed top-5 right-5 px-4 py-2 rounded shadow-lg text-white z-50',
           toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
         ]"
@@ -36,19 +37,19 @@
     </transition>
 
     <!-- Form Tambah / Edit Kategori -->
-    <div class="w-full lg:w-1/3 bg-white p-4 rounded-lg shadow">
+    <div class="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-lg">
       <h2 class="text-xl font-bold mb-4">{{ isEdit ? 'Edit Kategori' : 'Tambah Kategori' }}</h2>
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <input
           v-model="name"
           type="text"
           placeholder="Nama Kategori"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+          class="input input-bordered w-full focus:outline-none focus:ring focus:ring-blue-400"
           required
         />
         <button
           type="submit"
-          class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition cursor-pointer"
+          class="btn btn-primary w-full"
         >
           {{ isEdit ? 'Update' : 'Tambah' }}
         </button>
@@ -56,7 +57,7 @@
           v-if="isEdit"
           type="button"
           @click="cancelEdit"
-          class="w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600 transition cursor-pointer"
+          class="btn btn-neutral w-full"
         >
           Batal
         </button>
@@ -64,7 +65,7 @@
     </div>
 
     <!-- Tabel List Kategori -->
-    <div class="w-full lg:w-2/3 bg-white p-4 rounded-lg shadow overflow-auto">
+    <div class="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-lg overflow-auto">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">List Kategori</h2>
         <!-- ✅ Input Search -->
@@ -72,7 +73,7 @@
           v-model="searchQuery"
           type="text"
           placeholder="Cari kategori..."
-          class="border border-gray-300 rounded px-3 py-2 w-64 focus:outline-none focus:ring focus:ring-blue-400"
+          class="input input-bordered w-64 focus:outline-none focus:ring focus:ring-blue-400"
         />
       </div>
 
@@ -90,16 +91,16 @@
             <td class="border px-4 py-2">{{ cat.name }}</td>
             <td class="border px-4 py-2">{{ formatDate(cat.created_at) }}</td>
             <td class="border px-4 py-2">{{ formatDate(cat.updated_at) }}</td>
-            <td class="border px-4 py-2 space-x-2">
+            <td class="border px-4 py-2 flex justify-center items-center gap-2">
               <button
                 @click="editCategory(cat)"
-                class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition cursor-pointer"
+                class="btn btn-warning btn-sm"
               >
                 Edit
               </button>
               <button
                 @click="openDeleteModal(cat.id)"
-                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition cursor-pointer"
+                class="btn btn-error btn-sm"
               >
                 Hapus
               </button>
@@ -110,12 +111,13 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div>   
   </div>
-</template>
+ </template>
 
 <script>
-import api from '../services/api'
+import api from '../../services/api'
+
 
 export default {
   name: 'Categories',

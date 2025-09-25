@@ -1,13 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <component
-      :is="user ? 'NavbarPelanggan' : 'NavbarHome'"
-      :user="user"
-      :categories="categories"
-      :currentCategory="activeCategory"
-      @filter-category="filterByCategory"
-      @search="searchProducts"
-    />
+    <component :is="user ? 'NavbarPelanggan' : 'NavbarHome'" :user="user" :categories="categories"
+      :currentCategory="activeCategory" @filter-category="filterByCategory" @search="searchProducts" />
 
     <!-- Hero Banner -->
     <section class="bg-blue-100 py-16 text-center mb-8">
@@ -21,41 +15,33 @@
 
     <!-- Grid Produk -->
     <main class="container mx-auto px-4 pb-12">
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        <div
-          v-for="product in paginatedProducts"
-          :key="product.id"
-          class="card card-compact bg-white shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2"
-        >
-          <figure
-            class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden"
-          >
-            <img
-              :src="product.photo_url || 'https://via.placeholder.com/300x200?text=No+Image'"
-              :alt="product.name"
-              class="w-full h-full object-contain"
-            />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div v-for="product in paginatedProducts" :key="product.id"
+          class="card card-compact bg-white shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <figure class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+            <img :src="product.photo_url || 'https://via.placeholder.com/300x200?text=No+Image'" :alt="product.name"
+              class="w-full h-full object-contain" />
           </figure>
           <div class="card-body flex flex-col justify-between">
             <h3 class="card-title text-lg font-semibold truncate">
               {{ product.name }}
             </h3>
-            <p class="text-blue-600 font-bold mb-2">
+
+            <!-- Harga -->
+            <p class="text-blue-600 font-bold">
               Rp {{ Number(product.price).toLocaleString() }}
             </p>
+
+            <!-- Stok -->
+            <p class="text-sm text-gray-600">Stok: {{ product.stock ?? 0 }}</p>
+
+            <!-- Tombol Aksi -->
             <div class="card-actions mt-auto flex gap-2">
-              <button
-                @click="addToCart(product)"
-                class="btn btn-outline btn-sm flex-1 hover:bg-blue-500 hover:text-white"
-              >
+              <button @click="addToCart(product)"
+                class="btn btn-outline btn-sm flex-1 hover:bg-blue-500 hover:text-white">
                 🛒 Keranjang
               </button>
-              <button
-                @click="buyNow(product)"
-                class="btn btn-primary btn-sm flex-1"
-              >
+              <button @click="buyNow(product)" class="btn btn-primary btn-sm flex-1">
                 Beli
               </button>
             </div>
@@ -65,38 +51,28 @@
 
       <!-- Pagination -->
       <div class="flex justify-center mt-6 space-x-2">
-        <button
-          class="btn btn-sm"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="btn btn-sm" :disabled="currentPage === 1" @click="currentPage--">
           Prev
         </button>
-        <span class="btn btn-sm normal-case"
-          >Halaman {{ currentPage }} dari {{ totalPages }}</span
-        >
-        <button
-          class="btn btn-sm"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <span class="btn btn-sm normal-case">
+          Halaman {{ currentPage }} dari {{ totalPages }}
+        </span>
+        <button class="btn btn-sm" :disabled="currentPage === totalPages" @click="currentPage++">
           Next
         </button>
       </div>
     </main>
 
+
     <!-- Toast -->
     <transition name="fade">
       <div v-if="toast.show" class="toast toast-top toast-end z-50">
-        <div
-          class="alert"
-          :class="{
-            'alert-success': toast.type === 'success',
-            'alert-info': toast.type === 'info',
-            'alert-warning': toast.type === 'warning',
-            'alert-error': toast.type === 'error'
-          }"
-        >
+        <div class="alert" :class="{
+          'alert-success': toast.type === 'success',
+          'alert-info': toast.type === 'info',
+          'alert-warning': toast.type === 'warning',
+          'alert-error': toast.type === 'error'
+        }">
           <span>{{ toast.message }}</span>
         </div>
       </div>
@@ -205,6 +181,7 @@ export default {
 .fade-leave-active {
   transition: opacity 0.4s;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;

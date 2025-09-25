@@ -77,6 +77,20 @@
         />
       </div>
 
+      <!-- Stok -->
+      <div>
+        <label class="label">
+          <span class="label-text font-semibold">Stok</span>
+        </label>
+        <input
+          v-model.number="stock"
+          type="number"
+          placeholder="Masukkan jumlah stok produk"
+          class="input input-bordered w-full"
+          required
+        />
+      </div>
+
       <!-- Foto Produk -->
       <div>
         <label class="label">
@@ -87,6 +101,8 @@
           @change="onFileChange"
           class="file-input file-input-bordered w-full"
         />
+        <!-- Tampilkan peringatan jika file tidak valid -->
+        <p v-if="fileError" class="text-red-500 text-sm mt-2">{{ fileError }}</p>
       </div>
 
       <!-- Tombol Simpan -->
@@ -98,7 +114,7 @@
 </template>
 
 <script>
-import api from "../services/api";
+import api from "../../services/api";
 
 export default {
   data() {
@@ -109,13 +125,39 @@ export default {
       category_id: null,
       price: 0,
       weight: 0,
+      stock: 0, // Menambahkan stok ke data
       photoFile: null,
       categories: [],
+      fileError: "", // Menambahkan error message untuk file upload
     };
   },
   methods: {
     onFileChange(e) {
-      this.photoFile = e.target.files[0];
+      const file = e.target.files[0];
+      this.fileError = ""; // Reset error message
+
+      // Validasi ekstensi file
+      const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+      const maxSize = 5 * 1024 * 1024; // 5 MB dalam bytes
+
+      if (file) {
+        // Cek ekstensi file
+        if (!validExtensions.includes(file.type)) {
+          this.fileError = "File harus berupa JPG, JPEG, atau PNG.";
+          this.photoFile = null;
+          return;
+        }
+
+        // Cek ukuran file
+        if (file.size > maxSize) {
+          this.fileError = "Ukuran file maksimal 5 MB.";
+          this.photoFile = null;
+          return;
+        }
+
+        // Jika validasi lolos, simpan file
+        this.photoFile = file;
+      }
     },
 
     async fetchCategories() {
@@ -132,6 +174,11 @@ export default {
 
     async saveProduct() {
       try {
+        if (this.fileError) {
+          alert("Ada kesalahan pada file foto. Silakan periksa dan coba lagi.");
+          return;
+        }
+
         const formData = new FormData();
         formData.append("name", this.name);
         formData.append("description", this.description);
@@ -139,6 +186,7 @@ export default {
         formData.append("category_id", this.category_id);
         formData.append("price", this.price);
         formData.append("weight", this.weight);
+        formData.append("stock", this.stock); // Menambahkan stok ke dalam form data
         if (this.photoFile) {
           formData.append("photo", this.photoFile);
         }
