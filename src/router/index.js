@@ -7,7 +7,11 @@ const routes = [
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },
   { path: '/register', name: 'Register', component: () => import('../views/Register.vue') },
   { path: '/checkout', name: 'Checkout', component: () => import('../views/Checkout.vue') }, // ✅ checkout tetap di luar MainLayout
-   { path: '/forgot-password', name: 'ForgotPassword', component: () => import('../views/ForgotPassword.vue') }, // Tambahkan rute ini
+  { path: '/forgot-password', name: 'ForgotPassword', component: () => import('../views/ForgotPassword.vue') }, // Tambahkan rute ini
+   // Forgot Password & Reset Password Route
+  { path: '/forgot-password', name: 'ForgotPassword', component: () => import('../views/ForgotPassword.vue') },
+  // Rute untuk reset password yang mengarah ke halaman frontend
+  { path: '/reset-password', name: 'ResetPassword', component: () => import('../views/ResetPassword.vue') },
 
 
   // Admin Routes (dalam layout utama)

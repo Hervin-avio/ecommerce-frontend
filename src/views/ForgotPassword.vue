@@ -9,17 +9,19 @@
           <input
             v-model="email"
             type="email"
-            placeholder="Email Anda"
+            placeholder="Masukkan email Anda"
             required
             class="input input-bordered w-full focus:ring focus:ring-blue-400"
           />
         </div>
 
         <button
+          :disabled="loading"
           type="submit"
           class="btn btn-primary w-full cursor-pointer"
         >
-          Kirim Instruksi Reset
+          <span v-if="loading">Loading...</span>
+          <span v-else>Kirim Reset ke Email</span>
         </button>
       </form>
 
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-import api from "../services/api";
+import axios from 'axios';
 
 export default {
   name: "ForgotPassword",
@@ -46,17 +48,30 @@ export default {
       email: "",
       error: null,
       message: null,
+      loading: false,
     };
   },
   methods: {
     async sendResetEmail() {
+      this.loading = true;
+      this.error = null;
+      this.message = null;
+
       try {
-        await api.post("/forgot-password", { email: this.email });
-        this.message = "Instruksi reset password telah dikirimkan ke email Anda.";
-        this.error = null;
+        // Mengirim permintaan reset password ke backend
+        const response = await axios.post("http://127.0.0.1:8000/api/forgot-password", { email: this.email });
+
+        // Jika berhasil, tampilkan pesan sukses
+        this.message = response.data.message;
       } catch (err) {
-        this.error = "Terjadi kesalahan. Pastikan email yang Anda masukkan valid.";
-        this.message = null;
+        // Tangani error jika ada
+        if (err.response && err.response.data) {
+          this.error = err.response.data.message || "Terjadi kesalahan. Pastikan email yang Anda masukkan valid.";
+        } else {
+          this.error = "Terjadi kesalahan jaringan. Coba lagi nanti.";
+        }
+      } finally {
+        this.loading = false;
       }
     },
   },
