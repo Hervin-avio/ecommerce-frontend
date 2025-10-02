@@ -25,21 +25,23 @@
         </button>
       </form>
 
-      <!-- Success/Error Message -->
+      <!-- Pesan sukses / error -->
       <p v-if="message" class="text-green-500 mt-3 text-center">{{ message }}</p>
       <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
 
-      <!-- Link Back to Login -->
+      <!-- Link Kembali ke Login -->
       <p class="mt-6 text-center text-sm text-gray-600">
         Kembali ke 
-        <router-link to="/login" class="text-blue-500 font-medium hover:underline">Login</router-link>
+        <router-link to="/login" class="text-blue-500 font-medium hover:underline">
+          Login
+        </router-link>
       </p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import api from "../services/api"; // pastikan path sesuai
 
 export default {
   name: "ForgotPassword",
@@ -58,15 +60,13 @@ export default {
       this.message = null;
 
       try {
-        // Mengirim permintaan reset password ke backend
-        const response = await axios.post("http://127.0.0.1:8000/api/forgot-password", { email: this.email });
-
-        // Jika berhasil, tampilkan pesan sukses
+        const response = await api.post("/forgot-password", { email: this.email });
         this.message = response.data.message;
       } catch (err) {
-        // Tangani error jika ada
         if (err.response && err.response.data) {
-          this.error = err.response.data.message || "Terjadi kesalahan. Pastikan email yang Anda masukkan valid.";
+          this.error =
+            err.response.data.message ||
+            "Terjadi kesalahan. Pastikan email yang Anda masukkan valid.";
         } else {
           this.error = "Terjadi kesalahan jaringan. Coba lagi nanti.";
         }

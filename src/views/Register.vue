@@ -79,7 +79,7 @@
         <!-- Tombol Register -->
         <button
           type="submit"
-          class="btn btn-success w-full text-white font-semibold cursor-pointer"
+          class="btn btn-primary w-full text-white font-semibold cursor-pointer"
         >
           Register
         </button>

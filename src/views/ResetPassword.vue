@@ -19,7 +19,6 @@
               required
               class="input input-bordered w-full focus:ring focus:ring-blue-400 pr-10"
             />
-            <!-- Eye Icon for New Password -->
             <button
               type="button"
               @click="toggleNewPasswordVisibility"
@@ -46,7 +45,6 @@
               required
               class="input input-bordered w-full focus:ring focus:ring-blue-400 pr-10"
             />
-            <!-- Eye Icon for Confirm Password -->
             <button
               type="button"
               @click="toggleConfirmPasswordVisibility"
@@ -71,35 +69,33 @@
         </div>
       </form>
 
-      <!-- Error Message -->
+      <!-- Error / Success Message -->
       <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
+      <p v-if="message" class="text-green-500 mt-3 text-center">{{ message }}</p>
 
       <!-- Link Back to Login -->
       <p class="mt-6 text-center text-sm text-gray-600">
-        <router-link
-          to="/login"
-          class="text-blue-500 font-medium hover:underline"
-          >Back to Login</router-link
-        >
+        <router-link to="/login" class="text-blue-500 font-medium hover:underline">Back to Login</router-link>
       </p>
     </div>
   </div>
 </template>
 
 <script>
-import api from '../services/api'; // Import api.js
+import api from "../services/api";
 
 export default {
   data() {
     return {
-      email: this.$route.query.email, // Mendapatkan email dari query params
-      token: this.$route.query.token, // Mendapatkan token dari query params
+      email: this.$route.query.email || "",
+      token: this.$route.query.token || "",
       newPassword: "",
       confirmPassword: "",
       isSubmitting: false,
       error: "",
-      showNewPassword: false, // Status untuk visibilitas password baru
-      showConfirmPassword: false, // Status untuk visibilitas password konfirmasi
+      message: "",
+      showNewPassword: false,
+      showConfirmPassword: false,
     };
   },
   methods: {
@@ -110,131 +106,39 @@ export default {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
     async resetPassword() {
-      // Validasi jika password dan konfirmasi password tidak sama
+      this.error = "";
+      this.message = "";
+
       if (this.newPassword !== this.confirmPassword) {
         this.error = "Passwords do not match!";
         return;
       }
 
-      // Mengatur status saat form sedang disubmit
       this.isSubmitting = true;
 
       try {
-        // Mengirim request POST ke API untuk reset password
-        const response = await api.post("reset-password", {
+        const response = await api.post("/reset-password", {
           email: this.email,
           token: this.token,
           password: this.newPassword,
           password_confirmation: this.confirmPassword,
         });
 
-        // Menampilkan alert berhasil
-        alert("Password has been reset successfully!");
-        // Redirect ke halaman login
-        this.$router.push("/login");
-      } catch (error) {
-        // Menampilkan error jika gagal
-        this.error = error.response?.data?.message || "Error resetting password";
-        console.error(error);
+        this.message = response.data.message || "Password has been reset successfully!";
+        this.newPassword = "";
+        this.confirmPassword = "";
+
+        setTimeout(() => {
+          this.$router.push("/login");
+        }, 1500);
+
+      } catch (err) {
+        this.error = err.response?.data?.message || "Error resetting password";
+        console.error(err);
       } finally {
-        // Mengubah status menjadi tidak sedang submit
         this.isSubmitting = false;
       }
     },
   },
 };
 </script>
-
-<style scoped>
-/* Tampilan untuk form Reset Password */
-.reset-password-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f7f7f7;
-}
-
-.reset-password-form {
-  background-color: #fff;
-  padding: 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 1rem;
-  font-size: 24px;
-  color: #3b82f6;
-}
-
-p {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #4b5563;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-input.form-control {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-button.btn {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: #007bff;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button.btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: red;
-  font-size: 14px;
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.link {
-  text-align: center;
-  font-size: 14px;
-  color: #4b5563;
-}
-
-.link a {
-  color: #3b82f6;
-  text-decoration: underline;
-}
-
-/* Styling untuk Eye Icon */
-button[type="button"]:focus {
-  outline: none;
-}
-
-button[type="button"]:hover {
-  background-color: transparent;
-}
-</style>
